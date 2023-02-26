@@ -13,9 +13,17 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+        for idx in 1...3 {
+            let newActivity = Activity(context: viewContext)
+            newActivity.start = Date()
+            newActivity.end = Date().addingTimeInterval(TimeInterval(idx))
+            newActivity.title = "Task #\(idx)"
+        }
+        for idx in 1...2 {
+            let newActivity = Activity(context: viewContext)
+            newActivity.start = Date().addingTimeInterval(TimeInterval(24 * 60 * 60))
+            newActivity.end = Date().addingTimeInterval(TimeInterval(24 * 60 * 60 + idx))
+            newActivity.title = "Task #\(idx + 3)"
         }
         do {
             try viewContext.save()
