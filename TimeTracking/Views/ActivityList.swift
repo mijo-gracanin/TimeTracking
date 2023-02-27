@@ -6,43 +6,23 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
-struct ActivityList: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    
-    @SectionedFetchRequest<String, Activity>(
-        sectionIdentifier: \.sectionTitle,
-        sortDescriptors: [NSSortDescriptor(keyPath: \Activity.start, ascending: true)],
-        animation: .default)
-    private var activitySections: SectionedFetchResults<String, Activity>
+struct ActivityList: View {    
+    let store: StoreOf<Activities>
     
     var body: some View {
-        List {
-            ForEach(activitySections) { section in
-                Section(section.first!.sectionTitle) {
-                    ForEach(section) { activity in
-                        ActivityRow(activity: activity)
-                    }
-                    .onDelete { indexSet in
-                        deleteActivities(section: section, offsets: indexSet)
-                    }
+        WithViewStore(store, observe: { $0 }) { viewStore in
+            List {
+                ForEach(viewStore.activities) { activity in
+                    ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                }
+                .onDelete { indexSet in
+                    viewStore.send(.onDelete(indexSet))
                 }
             }
-        }
-
-    }
-
-    private func deleteActivities(section: SectionedFetchResults<String, Activity>.Section, offsets: IndexSet) {
-        withAnimation {
-            offsets.map { section[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            .onAppear {
+                viewStore.send(.onAppear)
             }
         }
     }
@@ -50,6 +30,10 @@ struct ActivityList: View {
 
 struct ActivitiesView_Previews: PreviewProvider {
     static var previews: some View {
-        ActivityList().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ActivityList(store: Store(
+            initialState: Activities.State(
+                activities: IdentifiedArrayOf(
+                    uniqueElements: try! PersistenceController.preview.getActivityStates())),
+            reducer: Activities()))
     }
 }

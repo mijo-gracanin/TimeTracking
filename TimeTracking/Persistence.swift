@@ -14,17 +14,13 @@ struct PersistenceController {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         for idx in 1...3 {
-            let newActivity = Activity(context: viewContext)
+            let newActivity = ActivityMO(context: viewContext)
+            newActivity.id = UUID(uuidString: "00000000-0000-0000-0000-00000000000\(idx)")
             newActivity.start = Date()
             newActivity.end = Date().addingTimeInterval(TimeInterval(idx))
             newActivity.title = "Task #\(idx)"
         }
-        for idx in 1...2 {
-            let newActivity = Activity(context: viewContext)
-            newActivity.start = Date().addingTimeInterval(TimeInterval(24 * 60 * 60))
-            newActivity.end = Date().addingTimeInterval(TimeInterval(24 * 60 * 60 + idx))
-            newActivity.title = "Task #\(idx + 3)"
-        }
+
         do {
             try viewContext.save()
         } catch {
@@ -60,5 +56,51 @@ struct PersistenceController {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
+    }
+    
+    func getActivityStates() throws -> [Activity.State] {
+        let activityStates = try getActivityMOs().map { Activity.State(with: $0) }
+        return activityStates
+    }
+    
+    func addActivity(_ activity: Activity.State) throws -> ActivityAddResponse {
+        
+        let activityMO = ActivityMO.instance(from: activity, with: context)
+        
+        try context.save()
+        
+        return ActivityAddResponse(addedActivity: Activity.State(with: activityMO),
+                                   allActivities: try getActivityStates())
+    }
+    
+    func removeActivities(_ activities: [Activity.State]) throws -> ActivityRemoveResponse {
+        
+        var removedActivities: [Activity.State] = []
+        
+        try activities.forEach { activity in
+            let activityMOs = try getActivityMOs()
+            if let itemId = activityMOs.filter({ $0.id == activity.id }).first?.objectID,
+               let activityMO = context.object(with: itemId) as? ActivityMO {
+                context.delete(activityMO)
+                removedActivities.append(activity)
+            }
+        }
+        try context.save()
+        
+        return ActivityRemoveResponse(removedActivities: removedActivities,
+                                      allActivities: try getActivityStates())
+    }
+    
+    // MARK: - Private
+    private func getActivityMOs() throws -> [ActivityMO] {
+        let request = NSFetchRequest<ActivityMO>(entityName: "Activity")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \ActivityMO.start, ascending: true)]
+        let activityMOs = try context.fetch(request)
+        
+        return activityMOs
+    }
+    
+    private var context: NSManagedObjectContext {
+        return container.viewContext
     }
 }

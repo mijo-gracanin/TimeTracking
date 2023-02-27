@@ -10,9 +10,14 @@
 		7B02994129A96F95009B6AE4 /* ActivityCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B02994029A96F95009B6AE4 /* ActivityCreator.swift */; };
 		7B02994529AA4DB5009B6AE4 /* TimeInterval+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B02994429AA4DB5009B6AE4 /* TimeInterval+Formatting.swift */; };
 		7B02994729AA78C6009B6AE4 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B02994629AA78C6009B6AE4 /* ActivityRow.swift */; };
-		7B78810B29AB6FD50071BDE6 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78810929AB6FD50071BDE6 /* Activity.swift */; };
+		7B78810B29AB6FD50071BDE6 /* ActivityMO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78810929AB6FD50071BDE6 /* ActivityMO.swift */; };
 		7B78810E29AB85580071BDE6 /* ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78810D29AB85580071BDE6 /* ExtensionTests.swift */; };
-		7B78811029AB94070071BDE6 /* ActivityCreatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78810F29AB94070071BDE6 /* ActivityCreatorTests.swift */; };
+		7B78811029AB94070071BDE6 /* ActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78810F29AB94070071BDE6 /* ActivityTests.swift */; };
+		7B78811329AC14ED0071BDE6 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 7B78811229AC14ED0071BDE6 /* ComposableArchitecture */; };
+		7B78811829AC9C8E0071BDE6 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78811729AC9C8E0071BDE6 /* Activity.swift */; };
+		7B78811B29AC9D080071BDE6 /* ActivityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78811A29AC9D080071BDE6 /* ActivityClient.swift */; };
+		7B78811D29ACC3880071BDE6 /* Activities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78811C29ACC3880071BDE6 /* Activities.swift */; };
+		7B78811F29AD642E0071BDE6 /* ActivitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B78811E29AD642E0071BDE6 /* ActivitiesTests.swift */; };
 		7BDEE05129A56550001C60CB /* TimeTrackingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDEE05029A56550001C60CB /* TimeTrackingApp.swift */; };
 		7BDEE05329A56550001C60CB /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDEE05229A56550001C60CB /* Persistence.swift */; };
 		7BDEE05629A56550001C60CB /* TimeTracking.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7BDEE05429A56550001C60CB /* TimeTracking.xcdatamodeld */; };
@@ -36,9 +41,13 @@
 		7B02994029A96F95009B6AE4 /* ActivityCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityCreator.swift; sourceTree = "<group>"; };
 		7B02994429AA4DB5009B6AE4 /* TimeInterval+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Formatting.swift"; sourceTree = "<group>"; };
 		7B02994629AA78C6009B6AE4 /* ActivityRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRow.swift; sourceTree = "<group>"; };
-		7B78810929AB6FD50071BDE6 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
+		7B78810929AB6FD50071BDE6 /* ActivityMO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityMO.swift; sourceTree = "<group>"; };
 		7B78810D29AB85580071BDE6 /* ExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionTests.swift; sourceTree = "<group>"; };
-		7B78810F29AB94070071BDE6 /* ActivityCreatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityCreatorTests.swift; sourceTree = "<group>"; };
+		7B78810F29AB94070071BDE6 /* ActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTests.swift; sourceTree = "<group>"; };
+		7B78811729AC9C8E0071BDE6 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
+		7B78811A29AC9D080071BDE6 /* ActivityClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityClient.swift; sourceTree = "<group>"; };
+		7B78811C29ACC3880071BDE6 /* Activities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activities.swift; sourceTree = "<group>"; };
+		7B78811E29AD642E0071BDE6 /* ActivitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesTests.swift; sourceTree = "<group>"; };
 		7BDEE04D29A56550001C60CB /* TimeTracking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeTracking.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BDEE05029A56550001C60CB /* TimeTrackingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTrackingApp.swift; sourceTree = "<group>"; };
 		7BDEE05229A56550001C60CB /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -56,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B78811329AC14ED0071BDE6 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +82,7 @@
 		7B02994229A96FAB009B6AE4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				7B78810929AB6FD50071BDE6 /* Activity.swift */,
+				7B78810929AB6FD50071BDE6 /* ActivityMO.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -83,6 +93,23 @@
 				7B02994429AA4DB5009B6AE4 /* TimeInterval+Formatting.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		7B78811629AC9C730071BDE6 /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				7B78811729AC9C8E0071BDE6 /* Activity.swift */,
+				7B78811C29ACC3880071BDE6 /* Activities.swift */,
+			);
+			path = Activities;
+			sourceTree = "<group>";
+		};
+		7B78811929AC9CF30071BDE6 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				7B78811A29AC9D080071BDE6 /* ActivityClient.swift */,
+			);
+			path = Client;
 			sourceTree = "<group>";
 		};
 		7BDEE04429A56550001C60CB = {
@@ -106,6 +133,8 @@
 		7BDEE04F29A56550001C60CB /* TimeTracking */ = {
 			isa = PBXGroup;
 			children = (
+				7B78811629AC9C730071BDE6 /* Activities */,
+				7B78811929AC9CF30071BDE6 /* Client */,
 				7B02994329AA4DA0009B6AE4 /* Extensions */,
 				7B02994229A96FAB009B6AE4 /* Models */,
 				7BDEE08229A57359001C60CB /* Views */,
@@ -131,7 +160,8 @@
 			isa = PBXGroup;
 			children = (
 				7B78810D29AB85580071BDE6 /* ExtensionTests.swift */,
-				7B78810F29AB94070071BDE6 /* ActivityCreatorTests.swift */,
+				7B78810F29AB94070071BDE6 /* ActivityTests.swift */,
+				7B78811E29AD642E0071BDE6 /* ActivitiesTests.swift */,
 			);
 			path = TimeTrackingTests;
 			sourceTree = "<group>";
@@ -163,6 +193,9 @@
 			dependencies = (
 			);
 			name = TimeTracking;
+			packageProductDependencies = (
+				7B78811229AC14ED0071BDE6 /* ComposableArchitecture */,
+			);
 			productName = TimeTracking;
 			productReference = 7BDEE04D29A56550001C60CB /* TimeTracking.app */;
 			productType = "com.apple.product-type.application";
@@ -213,6 +246,9 @@
 				Base,
 			);
 			mainGroup = 7BDEE04429A56550001C60CB;
+			packageReferences = (
+				7B78811129AC14ED0071BDE6 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			productRefGroup = 7BDEE04E29A56550001C60CB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -249,12 +285,15 @@
 			files = (
 				7BDEE05129A56550001C60CB /* TimeTrackingApp.swift in Sources */,
 				7B02994729AA78C6009B6AE4 /* ActivityRow.swift in Sources */,
+				7B78811B29AC9D080071BDE6 /* ActivityClient.swift in Sources */,
 				7BDEE05329A56550001C60CB /* Persistence.swift in Sources */,
 				7BDEE08129A57351001C60CB /* ActivityList.swift in Sources */,
-				7B78810B29AB6FD50071BDE6 /* Activity.swift in Sources */,
+				7B78810B29AB6FD50071BDE6 /* ActivityMO.swift in Sources */,
 				7B02994529AA4DB5009B6AE4 /* TimeInterval+Formatting.swift in Sources */,
 				7BDEE05829A56550001C60CB /* ContentView.swift in Sources */,
+				7B78811D29ACC3880071BDE6 /* Activities.swift in Sources */,
 				7BDEE05629A56550001C60CB /* TimeTracking.xcdatamodeld in Sources */,
+				7B78811829AC9C8E0071BDE6 /* Activity.swift in Sources */,
 				7B02994129A96F95009B6AE4 /* ActivityCreator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,8 +302,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7B78811029AB94070071BDE6 /* ActivityCreatorTests.swift in Sources */,
+				7B78811029AB94070071BDE6 /* ActivityTests.swift in Sources */,
 				7B78810E29AB85580071BDE6 /* ExtensionTests.swift in Sources */,
+				7B78811F29AD642E0071BDE6 /* ActivitiesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,6 +581,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7B78811129AC14ED0071BDE6 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7B78811229AC14ED0071BDE6 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7B78811129AC14ED0071BDE6 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		7BDEE05429A56550001C60CB /* TimeTracking.xcdatamodeld */ = {
