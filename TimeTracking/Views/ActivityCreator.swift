@@ -34,6 +34,7 @@ struct ActivityCreator: View {
                         .frame(width: 42, height: 42)
                         .foregroundColor(viewStore.start == nil ? .purple : .orange)
                 }
+                .buttonStyle(.borderless)
             }
         }
     }
