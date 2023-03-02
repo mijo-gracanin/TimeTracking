@@ -74,5 +74,24 @@ final class ActivitiesTests: XCTestCase {
             $0.activities = activities
         }
     }
+    
+    @MainActor
+    func testSelectActivityByUuid() async {
+        var activities = IdentifiedArrayOf(uniqueElements: try! ActivityClient.testValue.all())
+        let store = TestStore(
+            initialState: Activities.State(activities: activities),
+            reducer: Activities()
+        ) {
+            $0.activityClient = .testValue
+        }
+        
+        XCTAssertNil(store.state.selectedActivityByUuid)
+        
+        let uuid = store.state.activities.first!.id
+        
+        await store.send(.selectActivityByUuid(uuid)) {
+            $0.selectedActivityByUuid = uuid
+        }
+    }
 
 }

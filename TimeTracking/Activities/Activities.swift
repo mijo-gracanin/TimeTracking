@@ -12,6 +12,7 @@ struct Activities: ReducerProtocol {
     struct State: Equatable {
         var activities: IdentifiedArrayOf<Activity.State> = []
         var templateActivity = Activity.State()
+        var selectedActivityByUuid: UUID?
     }
     
     enum Action: Equatable {
@@ -20,6 +21,7 @@ struct Activities: ReducerProtocol {
         case onDelete(IndexSet)
         case getAllActivities(TaskResult<[Activity.State]>)
         case activityRemoveResponse(TaskResult<ActivityRemoveResponse>)
+        case selectActivityByUuid(UUID?)
     }
     
     @Dependency(\.activityClient) var activityClient
@@ -72,6 +74,10 @@ struct Activities: ReducerProtocol {
             removedIds.forEach { id in
                 state.activities.remove(id: id)
             }
+            return .none
+            
+        case .selectActivityByUuid(let uuid):
+            state.selectedActivityByUuid = uuid
             return .none
             
         case .getAllActivities(.failure), .activityRemoveResponse(.failure):

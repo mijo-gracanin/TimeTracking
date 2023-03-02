@@ -13,17 +13,45 @@ struct ActivityList: View {
     
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            List {
+            List(selection: viewStore.binding(get: \.selectedActivityByUuid,
+                                              send: Activities.Action.selectActivityByUuid)) {
                 ForEach(viewStore.activities) { activity in
+#if os(macOS)
+                    NavigationLink {
+                        ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                            .padding()
+                    } label:
+                    {
+                        ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                            .contextMenu {
+                                Button("Delete") {
+                                    guard let idx = viewStore.activities.firstIndex(of: activity) else { return }
+                                    viewStore.send(.onDelete(IndexSet(integer: idx)))
+                                }
+                            }
+                    }
+#else
                     ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+#endif
                 }
                 .onDelete { indexSet in
                     viewStore.send(.onDelete(indexSet))
                 }
             }
+#if os(macOS)
+            .onDeleteCommand(perform: viewStore.selectedActivityByUuid == nil ? nil : deleteSelected(viewStore: viewStore))
+#endif
             .onAppear {
-                viewStore.send(.onAppear)
+              viewStore.send(.onAppear)
             }
+        }
+    }
+    
+    private func deleteSelected(viewStore: ViewStore<Activities.State, Activities.Action>) -> (() -> ())  {
+        return {
+            guard let selected = viewStore.selectedActivityByUuid else { return }
+            guard let idx = viewStore.activities.firstIndex(where: { $0.id == selected }) else { return }
+            viewStore.send(.onDelete(IndexSet(integer: idx)))
         }
     }
 }

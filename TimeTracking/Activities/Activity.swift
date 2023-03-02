@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 struct Activity: ReducerProtocol {
     
-    struct State: Equatable, Identifiable {
+    struct State: Equatable, Identifiable, Hashable {
         var title = ""
         var id: UUID
         var start: Date?
