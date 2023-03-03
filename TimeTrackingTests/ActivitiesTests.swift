@@ -50,8 +50,10 @@ final class ActivitiesTests: XCTestCase {
         
         let newActivity = Activity.State(start: self.date, end: self.date)
 
-        await store.send(.addActivity(newActivity)) {
-            $0.activities = activities + [newActivity]
+        await store.send(.addActivity(newActivity))
+        
+        await store.receive(.activityAddResponse(.success(ActivityAddResponse(addedActivity: newActivity, allActivities: [newActivity] + activities)))) {
+            $0.activities = [newActivity] + activities
         }
     }
     
@@ -76,8 +78,49 @@ final class ActivitiesTests: XCTestCase {
     }
     
     @MainActor
-    func testSelectActivityByUuid() async {
+    func testDeleteSelected() async {
         var activities = IdentifiedArrayOf(uniqueElements: try! ActivityClient.testValue.all())
+        let store = TestStore(
+            initialState: Activities.State(activities: activities, selectedActivityByUuid: activities.first!.id),
+            reducer: Activities()
+        ) {
+            $0.activityClient = .testValue
+        }
+        
+        
+        let activity = activities.removeFirst()
+        
+        await store.send(.deleteSelected)
+        
+        await store.receive(.activityRemoveResponse(.success(ActivityRemoveResponse(removedActivities: [activity], allActivities: activities.elements)))) {
+            $0.activities = activities
+            $0.selectedActivityByUuid = nil
+        }
+    }
+    
+    @MainActor
+    func testDeleteActivity() async {
+        var activities = IdentifiedArrayOf(uniqueElements: try! ActivityClient.testValue.all())
+        let store = TestStore(
+            initialState: Activities.State(activities: activities),
+            reducer: Activities()
+        ) {
+            $0.activityClient = .testValue
+        }
+        
+        
+        let activity = activities.removeFirst()
+        
+        await store.send(.deleteActivity(activity))
+        
+        await store.receive(.activityRemoveResponse(.success(ActivityRemoveResponse(removedActivities: [activity], allActivities: activities.elements)))) {
+            $0.activities = activities
+        }
+    }
+    
+    @MainActor
+    func testSelectActivityByUuid() async {
+        let activities = IdentifiedArrayOf(uniqueElements: try! ActivityClient.testValue.all())
         let store = TestStore(
             initialState: Activities.State(activities: activities),
             reducer: Activities()

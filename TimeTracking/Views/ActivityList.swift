@@ -13,47 +13,54 @@ struct ActivityList: View {
     
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            List(selection: viewStore.binding(get: \.selectedActivityByUuid,
-                                              send: Activities.Action.selectActivityByUuid)) {
-                ForEach(viewStore.activities) { activity in
 #if os(macOS)
-                    NavigationLink {
-                        ActivityRow(store: Store(initialState: activity, reducer: Activity()))
-                            .padding()
-                    } label:
-                    {
-                        ActivityRow(store: Store(initialState: activity, reducer: Activity()))
-                            .contextMenu {
-                                Button("Delete") {
-                                    guard let idx = viewStore.activities.firstIndex(of: activity) else { return }
-                                    viewStore.send(.onDelete(IndexSet(integer: idx)))
-                                }
-                            }
-                    }
+            MacList(viewStore: viewStore)
 #else
-                    ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+            IosList(viewStore: viewStore)
 #endif
-                }
-                .onDelete { indexSet in
-                    viewStore.send(.onDelete(indexSet))
-                }
-            }
-#if os(macOS)
-            .onDeleteCommand(perform: viewStore.selectedActivityByUuid == nil ? nil : deleteSelected(viewStore: viewStore))
-#endif
-            .onAppear {
-              viewStore.send(.onAppear)
-            }
         }
     }
     
-    private func deleteSelected(viewStore: ViewStore<Activities.State, Activities.Action>) -> (() -> ())  {
-        return {
-            guard let selected = viewStore.selectedActivityByUuid else { return }
-            guard let idx = viewStore.activities.firstIndex(where: { $0.id == selected }) else { return }
-            viewStore.send(.onDelete(IndexSet(integer: idx)))
+    private struct IosList: View {
+        let viewStore: ViewStore<Activities.State, Activities.Action>
+        
+        var body: some View {
+            List {
+                ForEach(viewStore.activities) { activity in
+                    ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                }
+                .onDelete { viewStore.send(.onDelete($0)) }
+            }
+            .onAppear { viewStore.send(.onAppear) }
         }
     }
+    
+#if os(macOS)
+    private struct MacList: View {
+        let viewStore: ViewStore<Activities.State, Activities.Action>
+        
+        var body: some View {
+            List(selection: viewStore.binding(get: \.selectedActivityByUuid,
+                                              send: Activities.Action.selectActivityByUuid)) {
+                ForEach(viewStore.activities) { activity in
+                    NavigationLink {
+                        ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                            .padding()
+                    } label: {
+                        ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                            .contextMenu {
+                                Button("Delete") {
+                                    viewStore.send(.deleteActivity(activity))
+                                }
+                            }
+                    }
+                }
+            }
+            .onDeleteCommand(perform: viewStore.selectedActivityByUuid == nil ? nil : { viewStore.send(.deleteSelected) })
+            .onAppear { viewStore.send(.onAppear) }
+        }
+    }
+#endif
 }
 
 struct ActivitiesView_Previews: PreviewProvider {

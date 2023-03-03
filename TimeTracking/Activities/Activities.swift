@@ -20,8 +20,11 @@ struct Activities: ReducerProtocol {
         case addActivity(Activity.State)
         case onDelete(IndexSet)
         case getAllActivities(TaskResult<[Activity.State]>)
+        case activityAddResponse(TaskResult<ActivityAddResponse>)
         case activityRemoveResponse(TaskResult<ActivityRemoveResponse>)
         case selectActivityByUuid(UUID?)
+        case deleteSelected
+        case deleteActivity(Activity.State)
     }
     
     @Dependency(\.activityClient) var activityClient
@@ -38,16 +41,19 @@ struct Activities: ReducerProtocol {
             }
             
         case .addActivity(var activity):
-            do {
-                activity.end = date.now
-                let response = try activityClient.add(activity)
-                state.activities.append(response.addedActivity)
-            } catch {
-                // TODO: Handle error
+            activity.end = date.now
+            let activityToAdd = activity
+            
+            return .task {
+                await .activityAddResponse(
+                    TaskResult {
+                        try activityClient.add(activityToAdd)
+                    })
             }
-            
+        
+        case .activityAddResponse(.success(let response)):
+            state.activities = IdentifiedArrayOf(uniqueElements: response.allActivities)
             return .none
-            
             
         case .onDelete(let indexSet):
             var activities: [Activity.State] = []
@@ -65,6 +71,26 @@ struct Activities: ReducerProtocol {
                     })
             }
             
+        case .deleteSelected:
+            guard let uuid = state.selectedActivityByUuid,
+                  let activity = state.activities.first(where: { $0.id == uuid }) else {
+                return .none
+            }
+            return .task {
+                await .activityRemoveResponse(
+                    TaskResult {
+                        try activityClient.remove([activity])
+                    })
+            }
+            
+        case .deleteActivity(let activity):
+            return .task {
+                await .activityRemoveResponse(
+                    TaskResult {
+                        try activityClient.remove([activity])
+                    })
+            }
+            
         case .getAllActivities(.success(let activities)):
             state.activities = IdentifiedArrayOf(uniqueElements: activities)
             return .none
@@ -73,6 +99,9 @@ struct Activities: ReducerProtocol {
             let removedIds = response.removedActivities.map { $0.id }
             removedIds.forEach { id in
                 state.activities.remove(id: id)
+                if let uuid = state.selectedActivityByUuid, uuid == id {
+                    state.selectedActivityByUuid = nil
+                }
             }
             return .none
             
@@ -80,7 +109,7 @@ struct Activities: ReducerProtocol {
             state.selectedActivityByUuid = uuid
             return .none
             
-        case .getAllActivities(.failure), .activityRemoveResponse(.failure):
+        case .getAllActivities(.failure), .activityAddResponse(.failure), .activityRemoveResponse(.failure):
             // TODO: - Error Handling
             return .none
         }
