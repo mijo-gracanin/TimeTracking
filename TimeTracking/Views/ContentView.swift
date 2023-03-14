@@ -6,15 +6,19 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct ContentView: View {
 
+    let store: StoreOf<Activities>
+    
     var body: some View {
         NavigationView {
             VStack {
-                ActivityList()
+                ActivityList(store: store)
                 Spacer()
-                ActivityCreator()
+                ActivityCreator(store: Store(initialState: Activity.State(), reducer: Activity()),
+                                activitiesViewStore: ViewStore(store.stateless))
                     .padding()
             }
         }
@@ -23,6 +27,9 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView(store: Store(initialState: Activities.State(
+            activities: IdentifiedArrayOf(
+                uniqueElements: try! PersistenceController.preview.getActivityStates())),
+                                 reducer: Activities()))
     }
 }

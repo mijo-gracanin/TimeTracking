@@ -6,15 +6,14 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct TimeTrackingApp: App {
-    let persistenceController = PersistenceController.shared
-
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            ContentView(store: Store(initialState: Activities.State(),
+                                     reducer: Activities()))
         }
     }
 }

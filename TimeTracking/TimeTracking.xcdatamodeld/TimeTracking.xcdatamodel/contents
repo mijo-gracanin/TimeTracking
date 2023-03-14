@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Activity" representedClassName=".Activity" syncable="YES">
+    <entity name="Activity" representedClassName=".ActivityMO" syncable="YES">
         <attribute name="end" attributeType="Date" defaultDateTimeInterval="699101100" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="sectionTitle" transient="YES" attributeType="String" defaultValueString=""/>
         <attribute name="start" attributeType="Date" defaultDateTimeInterval="699101040" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String" defaultValueString=""/>

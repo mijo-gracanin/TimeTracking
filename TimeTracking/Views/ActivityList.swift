@@ -6,50 +6,69 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
-struct ActivityList: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    
-    @SectionedFetchRequest<String, Activity>(
-        sectionIdentifier: \.sectionTitle,
-        sortDescriptors: [NSSortDescriptor(keyPath: \Activity.start, ascending: true)],
-        animation: .default)
-    private var activitySections: SectionedFetchResults<String, Activity>
+struct ActivityList: View {    
+    let store: StoreOf<Activities>
     
     var body: some View {
-        List {
-            ForEach(activitySections) { section in
-                Section(section.first!.sectionTitle) {
-                    ForEach(section) { activity in
-                        ActivityRow(activity: activity)
-                    }
-                    .onDelete { indexSet in
-                        deleteActivities(section: section, offsets: indexSet)
+        WithViewStore(store, observe: { $0 }) { viewStore in
+#if os(macOS)
+            MacList(viewStore: viewStore)
+#else
+            IosList(viewStore: viewStore)
+#endif
+        }
+    }
+    
+    private struct IosList: View {
+        let viewStore: ViewStore<Activities.State, Activities.Action>
+        
+        var body: some View {
+            List {
+                ForEach(viewStore.activities) { activity in
+                    ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                }
+                .onDelete { viewStore.send(.onDelete($0)) }
+            }
+            .onAppear { viewStore.send(.onAppear) }
+        }
+    }
+    
+#if os(macOS)
+    private struct MacList: View {
+        let viewStore: ViewStore<Activities.State, Activities.Action>
+        
+        var body: some View {
+            List(selection: viewStore.binding(get: \.selectedActivityByUuid,
+                                              send: Activities.Action.selectActivityByUuid)) {
+                ForEach(viewStore.activities) { activity in
+                    NavigationLink {
+                        ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                            .padding()
+                    } label: {
+                        ActivityRow(store: Store(initialState: activity, reducer: Activity()))
+                            .contextMenu {
+                                Button("Delete") {
+                                    viewStore.send(.deleteActivity(activity))
+                                }
+                            }
                     }
                 }
             }
-        }
-
-    }
-
-    private func deleteActivities(section: SectionedFetchResults<String, Activity>.Section, offsets: IndexSet) {
-        withAnimation {
-            offsets.map { section[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            .onDeleteCommand(perform: viewStore.selectedActivityByUuid == nil ? nil : { viewStore.send(.deleteSelected) })
+            .onAppear { viewStore.send(.onAppear) }
         }
     }
+#endif
 }
 
 struct ActivitiesView_Previews: PreviewProvider {
     static var previews: some View {
-        ActivityList().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ActivityList(store: Store(
+            initialState: Activities.State(
+                activities: IdentifiedArrayOf(
+                    uniqueElements: try! PersistenceController.preview.getActivityStates())),
+            reducer: Activities()))
     }
 }
